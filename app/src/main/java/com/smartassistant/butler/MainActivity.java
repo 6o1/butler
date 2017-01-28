@@ -1,6 +1,7 @@
 package com.smartassistant.butler;
 
 import android.os.Bundle;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -13,8 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.smartassistant.butler.data.DbHelper;
+import com.smartassistant.butler.data.TestUtil;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Create a DB helper (this will create the DB if run for the first time)
+        DbHelper dbHelper = new DbHelper(this);
+        // Keep a reference to the mDb until paused or killed.
+        mDb = dbHelper.getWritableDatabase();
+        // Insert fake data until server-side is completed.
+        TestUtil.insertFakeData(mDb);
     }
 
     @Override
